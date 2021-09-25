@@ -34,7 +34,7 @@ import androidx.core.content.ContextCompat
 import com.prototype.dialer.core.extension.TAG
 
 
-class DialerActivity : ComponentActivity() {
+class MainActivity : ComponentActivity() {
 
     private val requestRole =
         registerForActivityResult(GetRole()) { result ->

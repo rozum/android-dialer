@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">iDial</string>
+    <string name="calling_channel_id">calling_channel_id</string>
+    <string name="in_call_title">Incomming call</string>
 </resources>
