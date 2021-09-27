@@ -1,37 +1,24 @@
 package com.prototype.dialer
 
 import android.app.Activity
-import android.app.AlertDialog
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.*
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import com.prototype.dialer.ui.theme.CallerExampleTheme
-
 import android.app.role.RoleManager
 import android.content.Context
-
 import android.content.Intent
+import android.net.sip.SipSession
 import android.os.Build
+import android.os.Bundle
 import android.telecom.TelecomManager
 import android.util.Log
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
 import androidx.activity.result.ActivityResult
-import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContract
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
-import androidx.core.content.ContextCompat
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
+import com.prototype.dialer.MainActivity.State.INCOMING_CALL
 import com.prototype.dialer.core.extension.TAG
+import com.prototype.dialer.ui.dialer.Dialer
+import com.prototype.dialer.ui.theme.ApplicationTheme
 
 
 class MainActivity : ComponentActivity() {
@@ -48,10 +35,12 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            CallerExampleTheme {
-                // A surface container using the 'background' color from the theme
+            ApplicationTheme {
                 Surface(color = MaterialTheme.colors.background) {
-                    Dialer()
+                    when {
+                        intent.getStringExtra(STATE_KEY) == INCOMING_CALL.name -> Dialer()
+                        else -> Dialer()
+                    }
                 }
             }
         }
@@ -76,55 +65,13 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-}
+    enum class State {
+        INCOMING_CALL,
+        DIALER
+    }
 
-private val symbols = listOf(1, 2, 3, 4, 5, 6, 7, 8, 9, "*", 0, "#")
-    .map { it.toString() }
-
-@Composable
-fun Dialer() {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(40.dp, 0.dp)
-    ) {
-        for (row in 0..2) {
-            Column(
-                modifier = Modifier.weight(1f)
-            ) {
-                for (col in 0..3) {
-                    DialerCell(symbols[row + col * 3])
-                }
-            }
-        }
+    companion object {
+        const val STATE_KEY = "STATE_KEY"
     }
 }
 
-@Composable
-fun DialerCell(symbol: String) {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(10.dp)
-            .height(50.dp)
-            .border(
-                width = 1.dp,
-                color = Color(0XFFEAEBEE),
-                shape = MaterialTheme.shapes.medium
-            ),
-        contentAlignment = Alignment.Center
-    ) {
-        Text(text = symbol)
-    }
-}
-
-@Preview(
-    showSystemUi = true,
-    showBackground = true
-)
-@Composable
-fun DefaultPreview() {
-    CallerExampleTheme {
-        Dialer()
-    }
-}
